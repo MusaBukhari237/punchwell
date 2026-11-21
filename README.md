@@ -63,6 +63,7 @@ npm test
 | `SESSION_SECRET` | random, saved in `DATA_DIR` | Signs session cookies |
 | `DEMO` | off | `1` seeds sample data and shows demo logins |
 | `DEMO_RESET_HOURS` | `0` | With `DEMO=1`, wipe and reseed every N hours |
+| `DEMO_PROFILE` | – | `construction` relabels the sample data for contracting, fit-out and workshop teams |
 | `BRAND_DIR` | `./brand` | Folder with `brand.json` (`appName`, `companyName`, `tagline`, `accent`, `accentInk`, `theme`, `logo`) and the logo file |
 | `APP_NAME` | `Punchwell` | Product name shown in the UI |
 
