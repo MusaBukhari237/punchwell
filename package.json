@@ -1,0 +1,15 @@
+{
+  "name": "punchwell",
+  "version": "1.0.0",
+  "description": "Self-hosted employee clock-in and clock-out: shared kiosk with PINs, phone check-in with location and selfie, timesheets and attendance reports.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Musa Bukhari",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server/index.js",
+    "demo": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env server/index.js",
+    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.js"
+  },
+  "keywords": ["attendance", "time-clock", "clock-in", "kiosk", "timesheet", "self-hosted", "hr", "small-business", "pwa"]
+}
