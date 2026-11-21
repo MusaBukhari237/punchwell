@@ -18,6 +18,10 @@ const PEOPLE = [
   ['Elena Petrova', 'Front Desk', 'Office Admin'], ['Samuel Okafor', 'Sales', 'Sales Associate']
 ];
 
+const CONSTRUCTION = { 'Operations': ['Site Execution', 'Site Engineer'], 'Warehouse': ['Joinery Workshop', 'Carpenter'], 'Front Desk': ['Admin & Reception', 'Office Coordinator'],
+  'Sales': ['Design Studio', 'Interior Designer'], 'Finance': ['Finance', 'Accountant'], 'Field Service': ['MEP', 'Electrician'] };
+const profile = () => (process.env.DEMO_PROFILE === 'construction' ? CONSTRUCTION : null);
+
 function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 
 export function seedDemo(db, { brandName } = {}) {
@@ -32,6 +36,7 @@ export function seedDemo(db, { brandName } = {}) {
   const pin = hashPassword('1234');
   const insE = db.prepare('INSERT INTO employees (code, name, email, phone, department, title, pin_hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
   const ids = PEOPLE.map(([name, dept, title], i) => {
+    if (profile()?.[dept]) { title = i % 3 ? profile()[dept][1] : title; dept = profile()[dept][0]; }
     const code = 'E' + String(101 + i);
     const email = name.toLowerCase().replace(/[^a-z]+/g, '.') + '@example.com';
     return Number(insE.run(code, name, email, '+000 0000 ' + String(1000 + i), dept, title, pin, now - 60 * 864e5).lastInsertRowid);
