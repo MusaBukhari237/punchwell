@@ -23,23 +23,24 @@ function Kiosk() {
   const fs = () => (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.()).catch?.(() => {});
   if (blocked) return html`<div class="k-overlay" style=${{ position: 'static', minHeight: '100vh' }}><div class="k-panel">
     <img src=${META.logo} style=${{ width: 56, height: 56, background: '#fff', borderRadius: 14, padding: 6 }} alt="" />
-    <h2>This device isn't a kiosk yet</h2><p style=${{ color: 'rgba(241,245,249,.7)', textAlign: 'center' }}>A manager needs to sign in and choose <b>Settings → Kiosk → Activate this device</b>.</p>
+    <h2>This device isn't a kiosk yet</h2><p style=${{ color: '#6b5d53', textAlign: 'center' }}>A manager needs to sign in and choose <b>Settings → Kiosk → Activate this device</b>.</p>
     <a class="btn primary lg" href="/#/settings">Sign in as manager</a></div></div>`;
   const inCount = (roster || []).filter((e) => e.state !== 'out').length;
   return html`<div class="kiosk">
     <aside class="k-side">
-      <div class="logo"><img src=${META.logo} alt="" /><div><b style=${{ fontSize: 17 }}>${META.companyName}</b><div style=${{ color: 'rgba(241,245,249,.55)', fontSize: 13 }}>Attendance kiosk</div></div></div>
+      <div class="logo"><img src=${META.logo} alt="" /><div><b style=${{ fontSize: 17 }}>${META.companyName}</b><div style=${{ color: 'rgba(255,255,255,.82)', fontSize: 13, fontFamily: 'var(--font)', fontWeight: 600 }}>Attendance kiosk</div></div></div>
       <div><div class="k-time">${clockParts(now).main}<small>${clockParts(now).period}</small></div>
         <div class="k-date">${new Date(now).toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long', timeZone: META.timezone })}</div></div>
-      <p style=${{ color: 'rgba(241,245,249,.7)', fontSize: 16 }}>Tap your name, enter your PIN, and you're done.</p>
+      <p style=${{ color: 'rgba(255,255,255,.9)', fontSize: 17, fontWeight: 600 }}>Tap your name, enter your PIN, and you're done.</p>
       <div class="k-stats"><div><b>${inCount}</b><span>On site now</span></div><div><b>${(roster || []).length}</b><span>Team members</span></div></div>
       <div class="k-foot"><button class="btn sm" onClick=${fs}>${Icon('maximize')} Full screen</button><a class="btn sm" href="/">${Icon('settings')} Manager</a></div>
     </aside>
     <main class="k-main">
+      <h1 class="k-title">Who's clocking in?</h1>
       <div class="k-search"><div class="search" style=${{ flex: 1 }}>${Icon('search')}<input class="input" placeholder="Find your name or employee ID" value=${q} onInput=${(e) => setQ(e.target.value)} /></div></div>
       <div class="k-grid">${list.map((e) => html`<button class="k-card" key=${e.id} onClick=${() => setWho(e)}>
         <i class=${'st ' + e.state}></i><${Avatar} name=${e.name} photo=${e.photo} /><b>${e.name}</b><small>${e.state === 'in' ? 'In since ' + fmtTime(e.since, META.timezone) : e.state === 'break' ? 'On break' : e.department || e.code}</small></button>`)}
-        ${roster && !list.length && html`<div style=${{ gridColumn: '1/-1', textAlign: 'center', color: 'rgba(241,245,249,.5)', padding: 40 }}>No one matches “${q}”.</div>`}</div>
+        ${roster && !list.length && html`<div style=${{ gridColumn: '1/-1', textAlign: 'center', color: '#a3958a', padding: 40, fontWeight: 600 }}>No one matches “${q}”.</div>`}</div>
     </main>
     ${who && html`<${PunchFlow} emp=${who} onClose=${() => { setWho(null); setQ(''); load(); }} />`}
   </div>`;
@@ -82,7 +83,7 @@ function PunchFlow({ emp, onClose }) {
   return html`<div class="k-overlay" onMouseDown=${(e) => e.target === e.currentTarget && onClose()}><div class="k-panel">
     ${step !== 'done' && html`<${Avatar} name=${emp.name} photo=${emp.photo} size="lg" /><h2>${emp.name}</h2>`}
     ${step === 'pin' && html`
-      <div style=${{ color: 'rgba(241,245,249,.65)' }}>Enter your PIN</div>
+      <div style=${{ color: '#6b5d53', fontWeight: 600 }}>Enter your PIN</div>
       <div class=${'pin-dots' + (shake ? ' shake' : '')}>${Array.from({ length: Math.max(4, pin.length) }, (_, i) => html`<i class=${i < pin.length ? 'on' : ''}></i>`)}</div>
       <div class="keypad">${keys.map((k) => html`<button class=${k === 'go' ? 'go' : ''} onClick=${() => press(k)} aria-label=${k}>${k === 'del' ? Icon('backspace') : k === 'go' ? Icon('check') : k}</button>`)}</div>`}
     ${step === 'choose' && html`<div class="k-actions">${actions.map((a) => html`<button class=${'big-btn ' + a} onClick=${() => choose(a)} disabled=${busy}>${Icon(ACTION_ICON[a])} ${ACTION_LABEL[a]}</button>`)}</div>`}
@@ -91,7 +92,7 @@ function PunchFlow({ emp, onClose }) {
       <div class=${'tick ' + (result.type === 'out' ? 'out' : result.type.startsWith('break') ? 'brk' : '')}>${Icon(result.type === 'out' ? 'logout' : result.type.startsWith('break') ? 'coffee' : 'check')}</div>
       <h2>${result.type === 'in' ? `${greet()}, ${emp.name.split(' ')[0]}!` : result.type === 'out' ? `See you, ${emp.name.split(' ')[0]}!` : ACTION_DONE[result.type]}</h2>
       <div class="t">${fmtTime(result.ts, META.timezone)}</div>
-      <div style=${{ color: 'rgba(241,245,249,.65)' }}>${ACTION_DONE[result.type]}${result.today?.worked_min ? ` · ${dur(result.today.worked_min)} worked today` : ''}${result.type === 'in' && result.today?.late ? ' · marked late' : ''}</div>
+      <div style=${{ color: '#6b5d53', fontWeight: 600 }}>${ACTION_DONE[result.type]}${result.today?.worked_min ? ` · ${dur(result.today.worked_min)} worked today` : ''}${result.type === 'in' && result.today?.late ? ' · marked late' : ''}</div>
       <button class="btn primary lg" onClick=${onClose}>Done</button></div>`}
     ${step !== 'done' && html`<button class="k-btn-ghost" onClick=${onClose}>Cancel</button>`}
   </div></div>`;

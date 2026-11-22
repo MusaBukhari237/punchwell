@@ -1,2 +1,2 @@
-{ "name": "Punchwell", "short_name": "Punchwell", "start_url": "/", "display": "standalone", "background_color": "#0b1020", "theme_color": "#f97316",
+{ "name": "Punchwell", "short_name": "Punchwell", "start_url": "/", "display": "standalone", "background_color": "#fbf7f2", "theme_color": "#f2612e",
   "icons": [{ "src": "/logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }] }

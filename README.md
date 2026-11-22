@@ -4,7 +4,11 @@
 
 [Try the live demo](https://punchwell.92.4.64.89.sslip.io) · [Open the demo kiosk](https://punchwell.92.4.64.89.sslip.io/kiosk) · [Report an issue](https://github.com/MusaBukhari237/punchwell/issues)
 
-[![Punchwell dashboard, kiosk and phone clock-in](docs/banner.png)](https://punchwell.92.4.64.89.sslip.io)
+### ▶ Watch the walkthrough (2:43)
+
+[![Punchwell walkthrough: kiosk with PIN and photo check, phone clock-in, live dashboard and reports](docs/walkthrough.gif)](https://github.com/MusaBukhari237/punchwell/releases/download/demo-video/punchwell-walkthrough.mp4)
+
+*Click the preview to play the full narrated walkthrough (MP4, 1080p). It's also attached to the [demo-video release](https://github.com/MusaBukhari237/punchwell/releases/tag/demo-video).*
 
 > Demo logins are on the sign-in page (manager `admin@demo.local` / `demo1234`, employee `E101` / PIN `1234`). The data is synthetic and resets every few hours.
 
@@ -25,11 +29,19 @@ Shops, cafés, clinics, salons, workshops, warehouses, offices and small factori
 | **Reports** | Attendance rate, late arrivals, absences, hours, overtime and average clock-in time per person. Print or export CSV. |
 | **Rules** | Work hours, grace period, working days and timezone. |
 | **Branding** | Upload your logo and pick an accent colour, or ship a `brand/brand.json` for a white-label deployment. |
-| **Light and dark themes** | Readable on a bright shop floor and a dim warehouse. |
+| **Light and dark themes** | Readable on a bright shop floor and a dim warehouse. Self-hosted fonts, no external requests. |
 
-| Kiosk | Phone | Reports |
-|---|---|---|
-| ![Kiosk](docs/kiosk.png) | ![Phone](docs/mobile.png) | ![Reports](docs/reports.png) |
+## Screenshots
+
+Warm, friendly and simple: Nunito and Figtree type, soft rounded cards, pill navigation along the top, and a bright kiosk built for tablets.
+
+| | |
+|---|---|
+| ![Sign-in (light)](docs/screenshots/login-light.webp)<br>**Sign-in (light)** | ![Sign-in (dark)](docs/screenshots/login-dark.webp)<br>**Sign-in (dark)** |
+| ![Live dashboard](docs/screenshots/dashboard-light.webp)<br>**Live dashboard** | ![Dashboard in dark mode](docs/screenshots/dashboard-dark.webp)<br>**Dashboard in dark mode** |
+| ![Shared kiosk](docs/screenshots/kiosk.webp)<br>**Shared kiosk** | ![Timesheets](docs/screenshots/timesheets.webp)<br>**Timesheets** |
+| ![Reports](docs/screenshots/reports.webp)<br>**Reports** | ![Employees](docs/screenshots/employees.webp)<br>**Employees** |
+| ![Settings](docs/screenshots/settings.webp)<br>**Settings** | ![Phone clock-in](docs/screenshots/phone.webp)<br>**Phone clock-in** |
 
 ## Quick start
 

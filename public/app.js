@@ -170,24 +170,32 @@ function AdminShell({ user, onLogout }) {
   const logout = async () => { await api('/auth/logout', { method: 'POST' }); onLogout(); };
   const Page = { dashboard: Dashboard, employees: Employees, timesheets: Timesheets, reports: Reports, settings: Settings }[page] || Dashboard;
   const title = (NAV.find((n) => n[0] === page) || NAV[0])[1];
-  return html`<div class="shell">
-    <aside class=${'sidebar' + (open ? ' open' : '')}>
+  const hour = Number(new Date().toLocaleTimeString('en-GB', { hour: '2-digit', hour12: false, timeZone: META.timezone }).slice(0, 2));
+  const greet = `Good ${hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening'}, ${(user.name || '').split(' ')[0] || 'there'}`;
+  const heading = page === 'dashboard' ? greet : title;
+  const sub = PAGE_SUB[page] || '';
+  return html`<div class="shell pw-shell">
+    <header class="topnav"><div class="topnav-in">
       <${Brand} />
-      <nav class="nav">${NAV.map(([k, l, i]) => html`<a href=${'#/' + k} class=${page === k ? 'active' : ''}>${Icon(i)} ${l}</a>`)}</nav>
-      <div class="nav-label">Clock-in points</div>
-      <nav class="nav"><a href="/kiosk" target="_blank">${Icon('monitor')} Open kiosk</a></nav>
+      <nav class=${'nav' + (open ? ' open' : '')}>${NAV.map(([k, l, i]) => html`<a href=${'#/' + k} class=${page === k ? 'active' : ''}>${Icon(i)} ${l}</a>`)}</nav>
       <span class="spacer"></span>
-      <div class="divider"></div>
-      <div class="row" style=${{ padding: '8px 6px' }}><${Avatar} name=${user.name} size="sm" /><div style=${{ minWidth: 0 }}><b class="small">${user.name}</b><div class="faint small" style=${{ overflow: 'hidden', textOverflow: 'ellipsis' }}>${user.email}</div></div></div>
-      <div class="row"><button class="btn ghost sm" onClick=${toggleTheme}>${Icon('moon')} Theme</button><button class="btn ghost sm" onClick=${logout}>${Icon('logout')} Sign out</button></div>
-    </aside>
-    ${open && html`<div class="scrim" onClick=${() => setOpen(false)}></div>`}
+      <a class="btn sm kiosk-link" href="/kiosk" target="_blank">${Icon('monitor')} <span>Open kiosk</span></a>
+      <button class="btn ghost icon" title="Switch theme" onClick=${toggleTheme}>${Icon('moon')}</button>
+      <div class="me-chip" title=${user.email}><${Avatar} name=${user.name} size="sm" /><span>${(user.name || '').split(' ')[0]}</span></div>
+      <button class="btn ghost icon" title="Sign out" onClick=${logout}>${Icon('logout')}</button>
+      <button class="btn ghost icon menu-btn" aria-label="Menu" onClick=${() => setOpen(!open)}>${Icon('menu')}</button>
+    </div></header>
     <main class="main">
-      <div class="topbar"><button class="btn ghost icon menu-btn" onClick=${() => setOpen(true)}>${Icon('menu')}</button><h1>${title}</h1><span class="spacer"></span>
-        <span class="faint small nowrap">${new Date().toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long', timeZone: META.timezone })}</span></div>
+      <div class="page-head"><div><h1>${heading}</h1>${sub && html`<p class="muted">${sub}</p>`}</div><span class="spacer"></span>
+        <span class="date-chip">${Icon('calendar')} ${new Date().toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long', timeZone: META.timezone })}</span></div>
       <div class="content"><${Page} route=${route} user=${user} /></div>
     </main><//>`;
 }
+const PAGE_SUB = {
+  dashboard: "Here's how your team's day is going.", employees: 'Add people, set their PINs and work schedules.',
+  timesheets: 'Every punch, every day. Fix mistakes with a full audit trail.', reports: 'Attendance, punctuality and hours, ready to export.',
+  settings: 'Make Punchwell yours: branding, rules and clock-in options.'
+};
 
 /* =================== Dashboard =================== */
 function Dashboard() {
@@ -429,7 +437,7 @@ function Reports() {
 /* =================== Settings =================== */
 const TZS = (() => { try { return Intl.supportedValuesOf('timeZone'); } catch { return ['UTC', 'Asia/Dubai', 'Asia/Karachi', 'Europe/London', 'America/New_York']; } })();
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const ACCENTS = ['#f97316', '#2563eb', '#16a34a', '#7c3aed', '#db2777', '#0d9488', '#dc2626', '#111827', '#bda873'];
+const ACCENTS = ['#f2612e', '#2563eb', '#16a34a', '#7c3aed', '#db2777', '#0d9488', '#dc2626', '#111827', '#b45309'];
 function Settings() {
   const [tab, setTab] = useState('general');
   const { data, reload } = useAsync(() => api('/settings'));
@@ -445,7 +453,7 @@ function Settings() {
     <div class="tabs">${tabs.map(([k, l]) => html`<button class=${tab === k ? 'on' : ''} onClick=${() => setTab(k)}>${l}</button>`)}</div>
     ${tab === 'general' && html`<div class="card card-pad col gap-lg">
       <div class="grid grid-2"><${Field} label="Company name"><input class="input" value=${f.company_name} onInput=${(e) => set({ ...f, company_name: e.target.value })} /><//>
-        <${Field} label="Timezone"><select class="input" value=${f.timezone} onChange=${(e) => set({ ...f, timezone: e.target.value })}>${TZS.map((z) => html`<option>${z}</option>`)}</select><//>
+        <${Field} label="Timezone"><select class="input" value=${f.timezone} onChange=${(e) => set({ ...f, timezone: e.target.value })}>${TZS.map((z) => html`<option value=${z}>${z}</option>`)}</select><//>
         <${Field} label="Work starts"><input type="time" class="input" value=${f.work_start} onInput=${(e) => set({ ...f, work_start: e.target.value })} /><//>
         <${Field} label="Work ends"><input type="time" class="input" value=${f.work_end} onInput=${(e) => set({ ...f, work_end: e.target.value })} /><//>
         <${Field} label="Grace period (minutes)" help="Arrivals within this window are not marked late"><input type="number" min="0" max="120" class="input" value=${f.grace_minutes} onInput=${(e) => set({ ...f, grace_minutes: e.target.value })} /><//></div>
